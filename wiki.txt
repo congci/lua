@@ -1,0 +1,86 @@
+【路由】
+路由分为默认路由和路由配置
+
+默认路由根据路由拆分对应模块和方法  
+默认路由不支持参数占位
+默认路由支持根据路径或者参数platfrom来选择不同的项目、支持两种写法
+1、类似msite/play/play/dynamic   ->  mod=msite.play.play   action=dynamic
+2、play/play/dynamic?platform=pc  -> mod=pc.play.play   action=dynamic 
+
+
+路由配置需要在conf文件夹里写、一维的key是项目路径 、二维mob为相对于项目下的文件
+
+    msite = {
+        {
+            url           = "api/play",       --路径格式
+            mob           = "play/play",      --模块位置、此模块的写法是项目下的文件+方法文件、
+            action        = "dynamic",        --方法
+            params        = {vid,pid}         --参数占位 --一般接口不用、做页面的时候伪静态用的、
+        }
+    }
+
+可以根据参数platform 来选择项目路径
+
+注、入口文件还可以利用单个路由来做、风格是node的express的风格、
+local route = require "route"
+
+route("dynamic","/api/play","msite.play.play") --支持参数占位、可以伪静态
+
+第一个是执行方法、第二个参数是匹配路径参数match、第三个是模块mob、如果mob和match为nil(如果一个不写，请mob和match都不要写)则默认拆分路径、
+mob和match都不需要的时候最好写mob,为了区分路径
+
+
+
+
+【配置】
+
+配置采用lua模块配置、用table来写、用的时候需要在对应的模块里引入成局部变量
+
+
+【调试】
+
+index.php为入口方法、根据路由获取对应的模块和方法、执行。如果出现错误、则根据设定返回相应的结果、默认返回bad request 
+加debug=1返回对应的报错信息
+
+【组件】
+star文件夹和lib为组件文件夹,star文件为基本函数组件、lib文件为基本功能组件
+star文件夹此次是按照类型做的拆分、
+
+
+【框架架构】
+
+框架以项目为主、解决了mvc模式控制器单薄、凌乱、有限命名的痛点、例如m站为规划为 msite主文件夹、其后为主要功能分区的文件夹、最后为具体功能文件
+
+msite
+|-->play
+   |--card文件
+   |--info文件
+|-->list
+|-->live
+|-->history
+|-->919
+
+
+【其他】
+access.lua为权限控制
+log.lua为日志记录、利用ngx.ctx不同阶段共享变量的原理而做
+
+base的data.lua为请求数据的基本模块
+local base = require "base.data"
+local data = base.getData()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
