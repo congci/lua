@@ -1,4 +1,6 @@
-local cjson         = require "cjson"
+local cjson         = require "cjson.safe"
+cjson.encode_empty_table_as_object(false)
+cjson.encode_sparse_array(true)
 local ipairs        = ipairs
 local string_find   = string.find
 local string_gsub   = string.gsub
@@ -58,11 +60,16 @@ end
 
 
 
-function _M.output(code,data,callback)
+
+function _M.output(code,data,callback,msg)
+    if not msg then msg = "success" end
+
     if not callback or not string_find(callback,"^%w+$") then
-      ngx.say(cjson.encode{code = code,data = data})
+        ngx.say(cjson.encode{code = code,data = data, msg = msg})
+        ngx.exit(200)
     else
-      ngx.say(callback .. '(' .. cjson.encode{code = code,data = data} .. ')')
+        ngx.say(callback .. '(' .. cjson.encode{code = code,data = data,msg = msg} .. ')')
+        ngx.exit(200)
     end
 end
 
