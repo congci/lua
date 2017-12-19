@@ -1,5 +1,5 @@
 local cjson         = require "cjson.safe"
-cjson.encode_empty_table_as_object(false)
+cjson.encode_empty_table_as_object(false) 
 cjson.encode_sparse_array(true)
 local ipairs        = ipairs
 local string_find   = string.find
